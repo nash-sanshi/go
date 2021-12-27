@@ -38,14 +38,6 @@ func main() {
 	time.Sleep(2 * time.Second)
 }
 
-type ProducerIF interface {
-	produce() error
-}
-
-type ConsumerIF interface {
-	consume() (int, error)
-}
-
 type Producer struct {
 	ctx      context.Context
 	interval time.Duration
