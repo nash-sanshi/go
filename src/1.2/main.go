@@ -16,14 +16,15 @@ func main() {
 			interval: time.Second,
 			next:     0, // value start from `0`
 		}
-
 		producer.produce(ch)
 	}(ch)
 
 	// start consumer
 	go func(ch <-chan int) {
-		consumer := Consumer{ctx: ctx, interval: time.Second}
-
+		consumer := Consumer{
+			ctx:      ctx,
+			interval: time.Second,
+		}
 		consumer.consume(ch)
 	}(ch)
 
@@ -62,7 +63,6 @@ func (p *Producer) produce(ch chan<- int) {
 			ch <- p.next
 			p.next++
 		}
-
 	}
 }
 
