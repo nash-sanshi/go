@@ -9,7 +9,7 @@ import (
 )
 
 func index(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("<h1>welcome to native cloud</h1>"))
+	w.Header().Add("test", "welcome to native cloud")
 
 	//fmt.Println("request header:", r.Header)
 	for k, v := range r.Header {
@@ -44,14 +44,11 @@ func healthz(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// 注册路由和路由函数，将url规则与处理器函数绑定做一个map映射存起来，并且会实现ServeHTTP方法，使处理器函数变成Handler函数
-	http.HandleFunc("/", index)
-	http.HandleFunc("/healthz", healthz)
-	fmt.Println("服务器已经启动，请在浏览器地址栏中输入 http://localhost:8900/")
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", index)
+	mux.HandleFunc("/healthz", healthz)
 	// 启动 HTTP 服务，并监听端口号，开始监听，处理请求，返回响应
-	err := http.ListenAndServe(":8900", nil)
-	fmt.Println("监听之后")
-	if err != nil {
-		log.Fatal("ListenAndServe", err)
+	if err := http.ListenAndServe("localhost:8080", mux); err != nil {
+		log.Fatalf("start http server failed, error: %s\n", err.Error())
 	}
 }
