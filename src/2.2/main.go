@@ -23,12 +23,12 @@ func index(w http.ResponseWriter, r *http.Request) {
 	var VERSION string
 	VERSION = os.Getenv("VERSION")
 	//fmt.Println(VERSION)
-	w.Header().Set("VERISON:", VERSION)
+	w.Header().Set("VERSION:", VERSION)
 
 	clientIP := getCurrentIP(r)
 	httpCode := http.StatusOK
-	log.Println("clientip: %s ", clientIP)
-	log.Println("status code: %s \n", httpCode)
+	log.Printf("clientip: %s \n", clientIP)
+	log.Printf("status code: %d \n", httpCode)
 }
 
 func getCurrentIP(r *http.Request) string {
