@@ -27,11 +27,12 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	clientIP := getCurrentIP(r)
 	httpCode := http.StatusOK
-	log.Println("clientip: %s, status code: %s \n", clientIP, httpCode)
+	log.Println("clientip: %s ", clientIP)
+	log.Println("status code: %s \n", httpCode)
 }
 
 func getCurrentIP(r *http.Request) string {
-	ip := r.Header.Get("X-REAL-IP")
+	ip := r.Header.Get("X-Real-IP")
 	if ip == "" {
 		ip = strings.Split(r.RemoteAddr, ":")[0]
 	}
