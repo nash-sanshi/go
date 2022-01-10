@@ -9,7 +9,6 @@ import (
 )
 
 func index(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("test", "welcome to native cloud")
 
 	//fmt.Println("request header:", r.Header)
 	for k, v := range r.Header {
@@ -29,6 +28,8 @@ func index(w http.ResponseWriter, r *http.Request) {
 	httpCode := http.StatusOK
 	log.Printf("clientip: %s \n", clientIP)
 	log.Printf("status code: %d \n", httpCode)
+
+	w.Write([]byte("welcome to native cloud"))
 }
 
 func getCurrentIP(r *http.Request) string {
