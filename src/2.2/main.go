@@ -45,11 +45,12 @@ func healthz(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", index)
-	mux.HandleFunc("/healthz", healthz)
+	//mux := http.NewServeMux()
+	http.HandleFunc("/", index)
+	http.HandleFunc("/healthz", healthz)
 	// 启动 HTTP 服务，并监听端口号，开始监听，处理请求，返回响应
-	if err := http.ListenAndServe("localhost:8080", mux); err != nil {
+	err := http.ListenAndServe("localhost:8080", nil)
+	if err != nil {
 		log.Fatalf("start http server failed, error: %s\n", err.Error())
 	}
 }
