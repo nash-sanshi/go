@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"log"
+	"net"
 	"net/http"
+	"net/http/pprof"
 	"os"
 	"strings"
 )
@@ -40,16 +42,35 @@ func getCurrentIP(r *http.Request) string {
 	return ip
 }
 
+// ClientIP 尽最大努力实现获取客户端 IP 的算法。
+//解析 X-Real-IP 和 X-Forwarded-For 以便于反向代理（nginx 或 haproxy）可以正常工作。
+func ClientIP(r *http.Request) string {
+	xForwardedFor := r.Header.Get("X-Forwarded-For")
+	ip := strings.TrimSpace(strings.Split(xForwardedFor, ",")[0])
+	if ip != "" {
+		return ip
+	}
+	ip = strings.TrimSpace(r.Header.Get("X-Real-Ip"))
+	if ip != "" {
+		return ip
+	}
+	if ip, _, err := net.SplitHostPort(strings.TrimSpace(r.RemoteAddr)); err == nil {
+		return ip
+	}
+	return ""
+}
+
 func healthz(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(w, "I am ok")
 }
 
 func main() {
-	//mux := http.NewServeMux()
-	http.HandleFunc("/", index)
-	http.HandleFunc("/healthz", healthz)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/debug/pprof/", pprof.Index)
+	mux.HandleFunc("/", index)
+	mux.HandleFunc("/healthz", healthz)
 	// 启动 HTTP 服务，并监听端口号，开始监听，处理请求，返回响应
-	err := http.ListenAndServe("localhost:8080", nil)
+	err := http.ListenAndServe("localhost:8080", mux)
 	if err != nil {
 		log.Fatalf("start http server failed, error: %s\n", err.Error())
 	}
