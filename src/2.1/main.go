@@ -7,11 +7,11 @@ import (
 	"time"
 )
 
-var fmeng = false
+var fuming = false
 
 func producer(threadID int, wg *sync.WaitGroup, ch chan string) {
 	count := 0
-	for !fmeng {
+	for !fuming {
 		time.Sleep(time.Second * 1)
 		count++
 		data := strconv.Itoa(threadID) + "---" + strconv.Itoa(count)
@@ -49,7 +49,7 @@ func main() {
 	//制造超时时间
 	go func() {
 		time.Sleep(time.Second * 3)
-		fmeng = true
+		fuming = true
 	}()
 	wgPd.Wait()
 	//生产完成，关闭channel
